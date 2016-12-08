@@ -19,7 +19,9 @@ class RegisterForm(forms.Form):
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput, required=True)    
 
     firstname = forms.CharField(label="First name", widget=forms.TextInput, required=False)
-    lastname = forms.CharField(label="Last name", widget=forms.TextInput, required=False)               
+    lastname = forms.CharField(label="Last name", widget=forms.TextInput, required=False)
+
+    type = forms.CharField(label="Profile Type", widget=forms.TextInput, required=False)
 
     def clean_password2(self):
         # Check that the two password entries match

@@ -41,24 +41,24 @@ class MyUser(AbstractBaseUser):
     )
 
     first_name = models.CharField(
-    	max_length=120,
-    	null=True,
-    	blank=True,
-    	)    
+        max_length=120,
+        null=True,
+        blank=True,
+        )    
 
     last_name = models.CharField(
-    	max_length=120,
-    	null=True,
-    	blank=True,
-    	)
+        max_length=120,
+        null=True,
+        blank=True,
+        )
 
     is_active = models.BooleanField(default=True,)
     is_admin = models.BooleanField(default=False,)
 
     # #New fields added
-    # is_student = models.BooleanField(default=False,)
-    # is_professor = models.BooleanField(default=False,)
-    # is_engineer = models.BooleanField(default=False,)    
+    is_student = models.BooleanField(default=False,)
+    is_teacher = models.BooleanField(default=False,)
+    is_engineer = models.BooleanField(default=False,)    
 
     objects = MyUserManager()
 
@@ -88,7 +88,7 @@ class MyUser(AbstractBaseUser):
         return self.is_admin
     
 #     def new_user_reciever(sender, instance, created, *args, **kwargs):
-#     	if created:   
+#       if created:   
      
 # Going to use signals to send emails
 # post_save.connect(new_user_reciever, sender=MyUser)
@@ -99,12 +99,30 @@ class Student(models.Model):
         MyUser,
         on_delete=models.CASCADE,
         primary_key=True)
+        
+    university = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+        
+    contact = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
 
     def get_full_name(self):        
         return "%s %s" %(self.user.first_name, self.user.last_name)
 
     def get_short_name(self):        
         return self.user.first_name
+        
+    def get_university(self):
+        return self.university
+        
+    def get_contact(self):
+        return self.contact
 
     def __str__(self):              #Python 3
         return self.user.email
@@ -122,3 +140,133 @@ class Student(models.Model):
     @property
     def is_staff(self):
         return False
+        
+    def is_student(self):
+        return True
+        
+    def is_teacher(self):
+        return False
+        
+    def is_engineer(self):
+        return False
+        
+class Teacher(models.Model):
+    user = models.OneToOneField(
+        MyUser,
+        on_delete=models.CASCADE,
+        primary_key=True)
+        
+    university = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+        
+    contact = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+
+    def get_full_name(self):        
+        return "%s %s" %(self.user.first_name, self.user.last_name)
+
+    def get_short_name(self):        
+        return self.user.first_name
+        
+    def get_university(self):
+        return self.university
+        
+    def get_contact(self):
+        return self.contact
+
+    def __str__(self):              #Python 3
+        return self.user.email
+
+    def __unicode__(self):           # Python 2
+        return self.user.email
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):        
+        return True
+
+
+    @property
+    def is_staff(self):
+        return false
+        
+    def is_student(self):
+        return False
+        
+    def is_teacher(self):
+        return True
+        
+    def is_engineer(self):
+        return False
+        
+class Engineer(models.Model):
+    user = models.OneToOneField(
+        MyUser,
+        on_delete=models.CASCADE,
+        primary_key=True)
+        
+    contact = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+        
+    company = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+        
+    alma_mater = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+
+    def get_full_name(self):        
+        return "%s %s" %(self.user.first_name, self.user.last_name)
+
+    def get_short_name(self):        
+        return self.user.first_name
+        
+    def get_contact(self):
+        return self.contact
+        
+    def get_company(self):
+        return self.company
+        
+    def get_alma_mater(self):
+        return self.alma_mater
+
+    def __str__(self):              #Python 3
+        return self.user.email
+
+    def __unicode__(self):           # Python 2
+        return self.user.email
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):        
+        return True
+
+
+    @property
+    def is_staff(self):
+        return false
+        
+    def is_student(self):
+        return False
+        
+    def is_teacher(self):
+        return False
+        
+    def is_engineer(self):
+        return True
